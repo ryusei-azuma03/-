@@ -2,8 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
-const ITTripNavigator = ({ industry, revenue }) => {
+const ITTripNavigator = () => {
+  const SearchParams = useSearchParams();
+  const industry = SearchParams.get('industry');
+  const revenue = SearchParams.get('revenue');
+  //console.log(revenue); 
   const router = useRouter();
   const [questions, setQuestions] = useState([]);
   const [selectedCount, setSelectedCount] = useState(0);
@@ -20,6 +25,7 @@ const ITTripNavigator = ({ industry, revenue }) => {
         );
         if (!response.ok) throw new Error("設問データの取得に失敗しました");
         const data = await response.json();
+        console.log(data[0].id)
         setQuestions(data);
       } catch (error) {
         console.error(error);

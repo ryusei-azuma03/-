@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const SelectDatePage = ({ params }) => {
+  console.log(params)
   const router = useRouter();
   const { id: dealId } = params;
   const [candidateDates, setCandidateDates] = useState([]);
@@ -11,6 +12,8 @@ const SelectDatePage = ({ params }) => {
   const [meetingMethod, setMeetingMethod] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [error, setError] = useState(null);
+  const [industry, setIndustry] = useState("");
+  const [revenue, setRevenue] = useState("");
 
   useEffect(() => {
     if (!dealId) {
@@ -26,10 +29,17 @@ const SelectDatePage = ({ params }) => {
         if (!response.ok) throw new Error("データ取得に失敗しました");
 
         const data = await response.json();
+        console.log(data);
+        const industry = data.industry;
+        //デバック用
+        //console.log(industry);
+        const revenue = data.revenue;
+        //console.log(revenue);
         const formattedDates = data.candidates.map((candidate) => candidate.start);
-
         setCandidateDates(formattedDates);
         setDuration(data.duration);
+        setIndustry(industry);
+        setRevenue(revenue);
         setMeetingMethod(data.meeting_method);
       } catch (err) {
         setError(err.message);
@@ -63,9 +73,11 @@ const SelectDatePage = ({ params }) => {
 
         const result = await response.json();
         console.log(result.message);
+        //const industry = industry;
+        console.log(industry);
 
         // 確定後、別画面に遷移
-        router.push("/question");
+        router.push(`/question?industry=${industry}&revenue=${encodeURIComponent(revenue)}`);
       } catch (error) {
         setError(error.message);
       }
